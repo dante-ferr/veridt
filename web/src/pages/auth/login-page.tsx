@@ -1,12 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Wordmark } from "@/components/brand/wordmark";
+import { AuthLayout } from "@/components/auth/auth-layout";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { Heading } from "@/components/ui/heading";
+import { Hint } from "@/components/ui/hint";
+import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
 import { signIn } from "@/services/auth";
 import { loginSchema, type LoginValues } from "./login-schema";
@@ -36,13 +38,10 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-6 px-4 py-8">
-      <h1>
-        <Wordmark />
-      </h1>
-      <p className="text-center text-[15px] leading-[22px] text-ink-muted">
+    <AuthLayout>
+      <Text muted className="text-center">
         Registro de evidências digitais com hash, data e hora verificáveis.
-      </p>
+      </Text>
       <Card asChild className="w-full max-w-[420px]">
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <Heading>Entrar</Heading>
@@ -71,18 +70,18 @@ export default function LoginPage() {
               Entrar
             </Button>
           </div>
-          <p className="text-xs leading-4 text-ink-muted">
+          <Hint>
             Após 5 tentativas sem sucesso, o acesso fica bloqueado por alguns
             minutos.
-          </p>
+          </Hint>
         </form>
       </Card>
-      <p className="flex gap-1 text-[15px] leading-[22px] text-ink">
+      <Text className="flex gap-1">
         Ainda não tem conta?
         <TextLink size="md" to="/register">
           Cadastre-se
         </TextLink>
-      </p>
-    </main>
+      </Text>
+    </AuthLayout>
   );
 }
