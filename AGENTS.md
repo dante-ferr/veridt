@@ -2,7 +2,7 @@
 
 Este arquivo é o plano do projeto. Agentes e desenvolvedores seguem este plano até o desenvolvedor o alterar. O livro em `docs/` registra o método. Se o livro e este arquivo divergirem sobre o método, vale o que estiver mais recente e explícito; na dúvida, pergunte.
 
-Nenhum código de aplicação existe ainda. Não crie código de site, serviço ou infraestrutura enquanto o desenvolvedor não pedir a implementação.
+A interface web começou em `web/`, até agora só o esqueleto: Vite, React, TypeScript, Tailwind e shadcn/ui. Não crie código de serviço ou infraestrutura enquanto o desenvolvedor não pedir a implementação.
 
 ## Texto do plano
 
@@ -92,6 +92,16 @@ Ao adaptar, reescreva identificadores para inglês. O sketch ainda usa o nome in
 - Código, identificadores, comentários, mensagens de erro de API e commits: inglês.
 - `docs/` e `README.md`: português.
 - Texto visível do produto (rótulos de tela): português, porque o produto é o do enunciado. Isso é premissa de trabalho. Se o desenvolvedor quiser outro idioma de interface, ele avisa.
+
+## Interface web
+
+- Formulários: `react-hook-form` com schema `zod` (`@hookform/resolvers/zod`). O schema fica ao lado da página (`<nome>-schema.ts`), e as mensagens de validação ficam em português.
+- Estado global: `zustand`, só quando houver estado compartilhado entre telas. Não instale antes de precisar. Estado de uma tela fica local.
+- Páginas em `web/src/pages/`, com `export default` na própria declaração (`export default function LoginPage()`). Componentes com export nomeado.
+
+## Comentários no código
+
+Não comente o óbvio. Comente só quando a lógica não se explica pelo próprio código, por exemplo um contorno, uma regra de negócio não evidente ou uma restrição externa. Não use comentário para indicar a origem do código, como "portado do sketch", nem para repetir o que o nome ou o tipo já dizem.
 
 ## Documentação
 

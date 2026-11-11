@@ -30,11 +30,29 @@ Decisão importante passa pelo desenvolvedor. Detalhe trivial não vira pergunta
 
 O livro registra método, decisão, mapa e roteiro no momento em que o trabalho muda. A skill usada está em `agents/skills/project-docs-book/`. Ela não depende de um editor específico.
 
+## 8. Stack da interface web
+
+Decidido em 2026-11-11. A interface web (C01) fica em `web/`, como workspace npm do mono-repo:
+
+- React com Vite e TypeScript, gerando uma SPA estática.
+- Tailwind CSS v4, pelo plugin `@tailwindcss/vite`.
+- shadcn/ui sobre Radix (estilo `radix-nova`), com ícones Lucide. Os componentes ficam em `web/src/components/ui/` e o alias `@` aponta para `web/src/`.
+
+O visual segue as telas do Figma do repositório de referência. A paleta e as fontes (IBM Plex Sans e Mono) vêm de `web/src/styles/tokens.css` do sketch e ficam em `web/src/index.css`. As variáveis do shadcn apontam para essa paleta, e as cores da marca também viram utilitários do Tailwind (`bg-seal`, `text-ink-muted`, `border-line` etc.).
+
+## 9. Rotas e login sem backend
+
+Decidido em 2026-11-11. As rotas usam `react-router` e ficam em `web/src/app/router.tsx`: `/` e `/login` levam ao login, e `/records` é uma tela vazia que serve só de destino depois do login. Listar registros (REQ 12) continua fora do escopo. A tela de login (REQ 03) está pronta, mas `signIn` em `web/src/services/auth.ts` ainda lança erro. O contrato com o gateway se decide junto com o backend.
+
+## 10. Formulários e estado global
+
+Decidido em 2026-11-11. Formulários usam `react-hook-form` com validação por schema `zod`. Estado global usa `zustand`, adotado só quando alguma tela precisar dele.
+
 ## O que ainda está aberto
 
 | Item em aberto | Quando se resolve |
 | :--- | :--- |
-| Stack (linguagem, framework de serviço, ORM, biblioteca de interface). `tecnologias.md` do repositório de referência é proposta. Sugestão: a stack já usada no sketch para os serviços deste escopo (TypeScript, React com Vite, gateway Fastify, serviços NestJS, Prisma, PostgreSQL, RabbitMQ), confirmada antes de escrever código. | Antes da primeira linha de código de aplicação |
+| Stack do backend (framework de serviço, ORM). A interface já está decidida (item 8). `tecnologias.md` do repositório de referência é proposta. Sugestão: a stack já usada no sketch (gateway Fastify, serviços NestJS, Prisma, PostgreSQL, RabbitMQ), confirmada antes de escrever código. | Antes da primeira linha de código de backend |
 | Fronteira entre comprar créditos (REQ 05) e efetuar pagamento (REQ 06). Sugestão: escolher pacote e gravar faturamento; não executar pagamento. | Antes de implementar a compra de créditos |
 | Confirmação de e-mail no cadastro. O plano de arquitetura prevê esse passo. O recorte mínimo do REQ 01 é persistir a conta válida. | Antes de implementar o cadastro |
 | Nomes dos eventos. O catálogo de referência usa nomes em português. O código deste repositório é em inglês. | Antes do primeiro evento |
