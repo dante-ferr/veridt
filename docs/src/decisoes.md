@@ -42,7 +42,7 @@ O visual segue as telas do Figma do repositório de referência. A paleta e as f
 
 ## 9. Rotas e login sem backend
 
-Decidido em 2026-11-11. As rotas usam `react-router` e ficam em `web/src/app/router.tsx`: `/` e `/login` levam ao login, e `/records` é uma tela vazia que serve só de destino depois do login. Listar registros (REQ 12) continua fora do escopo. A tela de login (REQ 03) está pronta, mas `signIn` em `web/src/services/auth.ts` ainda lança erro. O contrato com o gateway se decide junto com o backend.
+Decidido em 2026-11-11. As rotas usam `react-router` e ficam em `web/src/app/router.tsx`: `/` e `/login` levam ao login, `/forgot-password` e `/reset-password?token=` cobrem a recuperação de senha, e `/records` é uma tela vazia que serve só de destino depois do login. Listar registros (REQ 12) continua fora do escopo. As telas de login e de recuperação de senha estão prontas, mas as funções de `web/src/services/auth.ts` ainda lançam erro. O contrato com o gateway se decide junto com o backend.
 
 ## 10. Formulários e estado global
 
