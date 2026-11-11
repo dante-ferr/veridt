@@ -1,6 +1,20 @@
 # Veridt
 
-Site do Veridt, ainda sem código de aplicação. O plano de trabalho está em `AGENTS.md`. O método está no livro em `docs/`.
+Site do Veridt. O plano de trabalho está em `AGENTS.md`. O método está no livro em `docs/`.
+
+O backend dos REQ 01 a REQ 05 sobe com:
+
+```bash
+make up
+```
+
+O gateway fica em `http://localhost:8080`. O Vite, em outro terminal, fica em `http://localhost:5173` e encaminha `/v1` para o gateway:
+
+```bash
+make web-dev
+```
+
+Os e-mails locais aparecem em `http://localhost:8025`. O comportamento da API está em `docs/src/fluxos.md`.
 
 O enunciado e a arquitetura de referência ficam em [ESA_Trabalho](https://github.com/RottyWheels/ESA_Trabalho.git). Este repositório não copia aqueles arquivos.
 

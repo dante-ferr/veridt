@@ -1,6 +1,6 @@
 # Mapa da arquitetura
 
-Mapa do que o código deve obedecer quando a implementação for pedida. Ainda não há pastas de aplicação. A autoridade do desenho é o repositório [ESA_Trabalho](https://github.com/RottyWheels/ESA_Trabalho.git), em especial a ADR-011, a ADR-009 e `docs/diagramas/pacotes.puml`.
+Mapa do que o código obedece. A autoridade do desenho é o repositório [ESA_Trabalho](https://github.com/RottyWheels/ESA_Trabalho.git), em especial a ADR-011, a ADR-009 e `docs/diagramas/pacotes.puml`.
 
 ## Estilo
 
@@ -17,23 +17,26 @@ Dentro de cada serviço, a dependência aponta para o domínio:
 
 ## Recorte deste projeto
 
-Quando a implementação começar, o mono-repo deve ter só o necessário aos REQ 01 a 05:
+O mono-repo tem só o necessário aos REQ 01 a 05:
 
-| Pasta prevista | Contexto de referência | Requisitos |
+| Pasta | Contexto de referência | Requisitos |
 | :--- | :--- | :--- |
 | `web` | Interface web | Telas do escopo |
 | `gateway` | API Gateway | Borda autenticada |
 | `services/identity` | Identidade | REQ 01 a REQ 04 |
-| `services/notification` | Notificação | E-mail de recuperação e, se confirmado, de cadastro |
+| `services/notification` | Notificação | E-mail de confirmação de cadastro e de recuperação de senha |
 | `services/payments` | Créditos e pagamentos | REQ 05, até a fronteira registrada em [Decisões](decisoes.md) |
 
 Captura, registros e relatórios existem no plano completo e ficam sem pasta aqui até o desenvolvedor pedir o requisito correspondente.
 
 ## O que dá para executar hoje
 
-1. `make docs-serve` publica este livro em `http://localhost:3000`.
+1. `make up` sobe Postgres, RabbitMQ, Mailpit, identidade, notificação, créditos e o gateway em `http://localhost:8080`.
+2. `make web-dev` abre o Vite em `http://localhost:5173`. O Vite encaminha `/v1` para o gateway.
+3. `make test` roda os testes dos pacotes e dos serviços.
+4. `make docs-serve` publica este livro em `http://localhost:3000`.
 
-Não há site, API nem composição de contêineres.
+O comportamento HTTP está em [Fluxos](fluxos.md). Mailpit mostra os e-mails em `http://localhost:8025`.
 
 ## Uso do veridt-sketch
 

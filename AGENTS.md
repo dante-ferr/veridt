@@ -2,7 +2,7 @@
 
 Este arquivo é o plano do projeto. Agentes e desenvolvedores seguem este plano até o desenvolvedor o alterar. O livro em `docs/` registra o método. Se o livro e este arquivo divergirem sobre o método, vale o que estiver mais recente e explícito; na dúvida, pergunte.
 
-Nenhum código de aplicação existe ainda. Não crie código de site, serviço ou infraestrutura enquanto o desenvolvedor não pedir a implementação.
+O backend dos REQ 01 a REQ 05 está no repositório. Não amplie o escopo para os requisitos seguintes, nem reescreva a interface em `web/`, enquanto o desenvolvedor não pedir.
 
 ## Texto do plano
 
@@ -58,7 +58,7 @@ Implemente somente quando o desenvolvedor pedir, e somente estes requisitos do P
 | REQ 02 | Recuperar senha. |
 | REQ 03 | Entrar no sistema. |
 | REQ 04 | Sair do sistema. |
-| REQ 05 | Comprar créditos: escolher pacote e informar faturamento. O limite com o pagamento está em aberto. |
+| REQ 05 | Comprar créditos: escolher pacote e informar faturamento. O pedido para em `billing_recorded`. O pagamento continua no REQ 06. |
 
 REQ 06 em diante ficam de fora até um pedido explícito. A lista de títulos está no [roteiro](docs/src/roadmap.md).
 

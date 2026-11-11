@@ -1,18 +1,10 @@
 # Roteiro
 
-Trabalho aberto. Nada desta lista foi implementado. O comportamento pronto, quando existir, sai daqui e passa ao capítulo de método correspondente.
+Trabalho ainda aberto. O comportamento que já vale está em [Fluxos](fluxos.md).
 
-## 1. Confirmar o que bloqueia código
+## 1. Telas do escopo
 
-Responder a tabela em aberto de [Decisões registradas](decisoes.md): stack, fronteira do REQ 05, confirmação de e-mail e nomes de evento.
-
-## 2. REQ 01 a REQ 04
-
-Cadastrar advogado e usuário comum, recuperar senha, entrar e sair, na arquitetura de [Mapa da arquitetura](arquitetura.md). Reaproveitar o sketch só nesses fluxos.
-
-## 3. REQ 05
-
-Escolha de pacote e faturamento, no limite que o desenvolvedor confirmar. Pacotes da primeira versão no enunciado: básico, médio e premium.
+A interface em `web/` ainda é a casca do Vite. Falta ligar as telas de cadastro, confirmação de e-mail, entrada, saída, recuperação de senha e compra de créditos à API descrita em [Fluxos](fluxos.md).
 
 ## Fora deste roteiro
 
