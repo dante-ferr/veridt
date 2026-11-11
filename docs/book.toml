@@ -1,0 +1,8 @@
+[book]
+authors = ["dante-ferr"]
+language = "pt"
+src = "src"
+title = "Veridt"
+
+[output.html]
+no-section-label = true
