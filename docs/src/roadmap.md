@@ -1,22 +1,19 @@
 # Roteiro
 
-Trabalho aberto. O comportamento pronto, quando existir, sai daqui e passa ao capítulo de método correspondente.
+Trabalho ainda aberto. O comportamento que já vale está em [Fluxos](fluxos.md).
 
-## 1. Confirmar o que bloqueia código
+## 1. Telas do escopo
 
-Responder a tabela em aberto de [Decisões registradas](decisoes.md): stack, fronteira do REQ 05, confirmação de e-mail e nomes de evento.
+As telas existem em `web/` com serviços simulados (`web/src/services/`):
 
-## 2. REQ 01 a REQ 04
+- REQ 01: cadastrar advogado e usuário comum.
+- REQ 02: recuperar senha (pedir link e definir nova senha).
+- REQ 03 e REQ 04: entrar e sair.
+- REQ 05: comprar créditos (passo 1, pacote) e faturamento (passo 2). O pagamento (passo 3) é o REQ 06 e fica fora.
 
-Cadastrar advogado e usuário comum, recuperar senha, entrar e sair, na arquitetura de [Mapa da arquitetura](arquitetura.md). Reaproveitar o sketch só nesses fluxos.
+## 2. Integração da interface com o backend
 
-Andamento: as telas de cadastrar (REQ 01), entrar (REQ 03) e recuperar senha (REQ 02: pedir link e definir nova senha) existem na interface, mas ainda não estão integradas ao backend.
-
-## 3. REQ 05
-
-Escolha de pacote e faturamento, no limite que o desenvolvedor confirmar. Pacotes da primeira versão no enunciado: básico, médio e premium.
-
-Andamento: a tela de comprar créditos (passo 1, pacote) existe na interface, com os pacotes fixos no código e o histórico de compras simulado. A tela de faturamento (passo 2) também existe; o envio ainda é um stub e, quando der certo, limpa a seleção e volta para a tela de créditos. O pagamento (passo 3) é o REQ 06 e fica fora.
+Trocar os stubs pela API descrita em [Fluxos](fluxos.md) e resolver os itens em aberto de [Decisões registradas](decisoes.md): confirmação de e-mail (tela `/confirm`), histórico de compras, nome e saldo no header, e a sessão (tokens e `signOut`) numa store `zustand`.
 
 ## Fora deste roteiro
 

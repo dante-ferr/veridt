@@ -1,6 +1,11 @@
-node_modules
-dist
+local/
+docs/book/
+node_modules/
+dist/
+generated/
+coverage/
 *.local
+*.log
 .env
 .env.*
 !.env.example

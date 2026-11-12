@@ -2,7 +2,7 @@
 
 O código deve seguir SOLID. Este capítulo separa sugestão de decisão. Sugestão não autoriza a abstração. Quando a alternativa mudar módulos, portas ou hierarquia, o desenvolvedor escolhe e a escolha entra na seção de decisões.
 
-Não há código ainda. Nenhuma decisão de implementação SOLID foi tomada.
+As decisões abaixo foram tomadas em 2026-11-11, quando o backend foi pedido. Elas seguem a opção mais simples de cada sugestão.
 
 ## Sugestões
 
@@ -22,4 +22,22 @@ Nome de função, arquivo de teste espelhando um caso de uso já aceito, e a dir
 
 ## Decisões
 
-Nenhuma ainda.
+### Backend
+
+| Princípio | Decisão | Onde |
+| :--- | :--- | :--- |
+| Responsabilidade única | Um caso de uso por ação: cadastrar, confirmar e-mail, entrar, renovar sessão, sair, pedir recuperação, redefinir senha, ler a conta, listar pacotes, gravar pedido, listar pedidos e ler um pedido. | `services/identity/src/application/use-cases.ts`, `services/payments/src/application/use-cases.ts` |
+| Aberto/fechado | Advogado e usuário comum são o campo `profile` (`lawyer` ou `common_user`). Não há hierarquia de tipos. A empresa continua fora. | `services/identity/src/application/identity-store.ts` |
+| Substituição | Os dois perfis entram e saem pelo mesmo contrato de sessão. | `POST /v1/sessions` e `POST /v1/sessions/logout` |
+| Segregação de interface | Uma porta por serviço: `IdentityStore` e `CreditStore`. Conta, sessão e e-mail não viraram portas separadas. | `services/identity/src/application/identity-store.ts`, `services/payments/src/application/credit-store.ts` |
+| Inversão de dependência | O domínio não importa NestJS nem Prisma. Prisma, JWT, Argon2 e SMTP ficam na infraestrutura. | pastas `domain/` e `infrastructure/` de cada serviço |
+
+### Interface web
+
+Decidido em 2026-11-11 pelo desenvolvedor.
+
+| Princípio | Como se aplica em `web/` |
+| :--- | :--- |
+| Responsabilidade única (SRP) | Cada componente faz uma coisa: `Field` junta rótulo, campo, dica e erro; `OrderSummary` mostra o resumo do pedido; `SummaryLine` mostra uma linha. A página orquestra dados, formulário e navegação, e os serviços em `services/` falam com a API. |
+| Aberto/fechado (OCP) | Componentes por composição, no padrão do shadcn (`Card` com filhos, `asChild` para trocar o elemento, `className` e variantes `cva`). Uma tela nova monta peças existentes sem alterar o componente. |
+| Segregação de interface (ISP) | Componentes recebem só os dados que usam, tipados com `Pick<>` do tipo de domínio, em vez do objeto inteiro. Exemplo: `PackageCard` e `OrderSummary` recebem os campos do pacote, não o `CreditPackage`. |
