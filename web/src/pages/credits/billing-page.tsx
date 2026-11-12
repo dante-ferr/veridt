@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -13,14 +13,23 @@ import { Heading } from "@/components/ui/heading";
 import { Hint } from "@/components/ui/hint";
 import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
+import { useBuyCredits } from "@/hooks/credits/use-buy-credits";
+import { useGetCreditPackages } from "@/hooks/credits/use-get-credit-packages";
+import { useGetMe } from "@/hooks/session/use-get-me";
+import { applyApiError, errorMessage } from "@/lib/api-error";
 import { maskCpf, maskPhone, maskPostalCode, onlyDigits } from "@/lib/masks";
-import {
-  createOrder,
-  listPackages,
-  type CreditPackage,
-} from "@/services/credits";
 import { useCreditPurchaseStore } from "@/stores/credit-purchase-store";
 import { billingSchema, type BillingValues } from "./billing-schema";
+
+const fieldsByCode = {
+  invalid_name: "fullName",
+  invalid_email: "email",
+  invalid_phone: "phone",
+  invalid_cpf: "cpf",
+  invalid_postal_code: "postalCode",
+  invalid_region: "state",
+  invalid_address: "street",
+} as const;
 
 export default function BillingPage() {
   const navigate = useNavigate();
@@ -28,14 +37,19 @@ export default function BillingPage() {
     (state) => state.selectedPackageId,
   );
   const resetPurchase = useCreditPurchaseStore((state) => state.reset);
-  const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(
-    null,
+  const packagesQuery = useGetCreditPackages();
+  const { data: me } = useGetMe();
+  const buyCredits = useBuyCredits();
+  const selectedPackage = packagesQuery.data?.find(
+    (item) => item.id === selectedPackageId,
   );
   const {
     register,
     control,
     handleSubmit,
     setError,
+    getValues,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<BillingValues>({
     resolver: zodResolver(billingSchema),
@@ -55,25 +69,21 @@ export default function BillingPage() {
   });
 
   useEffect(() => {
-    if (!selectedPackageId) {
+    if (!selectedPackageId || (packagesQuery.data && !selectedPackage)) {
       navigate("/credits", { replace: true });
-      return;
     }
-    listPackages()
-      .then((items) => {
-        const found = items.find((item) => item.id === selectedPackageId);
-        if (found) setSelectedPackage(found);
-        else navigate("/credits", { replace: true });
-      })
-      .catch(() =>
-        setError("root", { message: "Não foi possível carregar o pacote." }),
-      );
-  }, [selectedPackageId, navigate, setError]);
+  }, [selectedPackageId, packagesQuery.data, selectedPackage, navigate]);
+
+  useEffect(() => {
+    if (!me) return;
+    if (!getValues("fullName")) setValue("fullName", me.fullName);
+    if (!getValues("email")) setValue("email", me.email);
+  }, [me, getValues, setValue]);
 
   async function onSubmit(values: BillingValues) {
     if (!selectedPackage) return;
     try {
-      await createOrder({
+      await buyCredits.mutateAsync({
         packageId: selectedPackage.id,
         billing: {
           ...values,
@@ -86,12 +96,7 @@ export default function BillingPage() {
       resetPurchase();
       navigate("/credits");
     } catch (caught) {
-      setError("root", {
-        message:
-          caught instanceof Error
-            ? caught.message
-            : "Não foi possível registrar o pedido.",
-      });
+      applyApiError(caught, setError, fieldsByCode);
     }
   }
 
@@ -101,6 +106,9 @@ export default function BillingPage() {
         Dados de faturamento
       </Heading>
       <Steps current={2} />
+      {packagesQuery.isError ? (
+        <Alert>{errorMessage(packagesQuery.error)}</Alert>
+      ) : null}
       {errors.root ? <Alert>{errors.root.message}</Alert> : null}
       <form
         onSubmit={handleSubmit(onSubmit)}

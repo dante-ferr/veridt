@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { PackageCard } from "@/components/credits/package-card";
-import { PaymentStateBadge } from "@/components/credits/payment-state-badge";
+import { OrderStateBadge } from "@/components/credits/order-state-badge";
 import { Steps } from "@/components/credits/steps";
 import { Alert } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Hint } from "@/components/ui/hint";
+import { Text } from "@/components/ui/text";
 import {
   Table,
   TableBody,
@@ -15,43 +16,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useGetCreditOrders } from "@/hooks/credits/use-get-credit-orders";
+import { useGetCreditPackages } from "@/hooks/credits/use-get-credit-packages";
+import { errorMessage } from "@/lib/api-error";
 import { formatDateTimeUtc } from "@/lib/format";
-import {
-  listOrders,
-  listPackages,
-  type CreditOrder,
-  type CreditPackage,
-} from "@/services/credits";
 import { useCreditPurchaseStore } from "@/stores/credit-purchase-store";
-
-const paymentMethodLabel = { pix: "Pix", checkout: "Mercado Pago" } as const;
 
 export default function CreditsPage() {
   const navigate = useNavigate();
-  const [packages, setPackages] = useState<CreditPackage[]>([]);
-  const [orders, setOrders] = useState<CreditOrder[]>([]);
-  const [error, setError] = useState("");
+  const packagesQuery = useGetCreditPackages();
+  const ordersQuery = useGetCreditOrders();
+  const packages = packagesQuery.data;
+  const orders = ordersQuery.data ?? [];
   const selectedPackageId = useCreditPurchaseStore(
     (state) => state.selectedPackageId,
   );
   const selectPackage = useCreditPurchaseStore((state) => state.selectPackage);
 
   useEffect(() => {
-    listPackages()
-      .then((items) => {
-        setPackages(items);
-        const current = useCreditPurchaseStore.getState().selectedPackageId;
-        if (!items.some((item) => item.id === current)) {
-          const fallback =
-            items.find((item) => item.code === "standard") ?? items[0];
-          if (fallback) selectPackage(fallback.id);
-        }
-      })
-      .catch(() => setError("Não foi possível carregar os pacotes."));
-    listOrders()
-      .then(setOrders)
-      .catch(() => setOrders([]));
-  }, [selectPackage]);
+    if (!packages) return;
+    const current = useCreditPurchaseStore.getState().selectedPackageId;
+    if (!packages.some((item) => item.id === current)) {
+      const fallback =
+        packages.find((item) => item.code === "standard") ?? packages[0];
+      if (fallback) selectPackage(fallback.id);
+    }
+  }, [packages, selectPackage]);
 
   function choose(packageId: string) {
     selectPackage(packageId);
@@ -64,9 +54,12 @@ export default function CreditsPage() {
         Comprar créditos
       </Heading>
       <Steps current={1} />
-      {error ? <Alert>{error}</Alert> : null}
+      {packagesQuery.isPending ? <Text muted>Carregando pacotes…</Text> : null}
+      {packagesQuery.isError ? (
+        <Alert>{errorMessage(packagesQuery.error)}</Alert>
+      ) : null}
       <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-center">
-        {packages.map((item) => (
+        {packages?.map((item) => (
           <PackageCard
             key={item.id}
             name={item.name}
@@ -85,6 +78,12 @@ export default function CreditsPage() {
       </Hint>
       <Card>
         <Heading level="h2">Histórico de compras</Heading>
+        {ordersQuery.isPending ? (
+          <Text muted>Carregando histórico…</Text>
+        ) : null}
+        {ordersQuery.isError ? (
+          <Alert>{errorMessage(ordersQuery.error)}</Alert>
+        ) : null}
         <Table>
           <TableHeader>
             <TableRow>
@@ -101,13 +100,13 @@ export default function CreditsPage() {
                 <TableCell>{formatDateTimeUtc(order.createdAt)}</TableCell>
                 <TableCell>{order.packageName}</TableCell>
                 <TableCell>{order.creditCount}</TableCell>
-                <TableCell>{paymentMethodLabel[order.method]}</TableCell>
+                <TableCell>—</TableCell>
                 <TableCell>
-                  <PaymentStateBadge state={order.state} />
+                  <OrderStateBadge state={order.state} />
                 </TableCell>
               </TableRow>
             ))}
-            {orders.length === 0 ? (
+            {ordersQuery.isSuccess && orders.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5}>Nenhuma compra ainda.</TableCell>
               </TableRow>
