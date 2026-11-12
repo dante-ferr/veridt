@@ -7,15 +7,23 @@ import { Text } from "@/components/ui/text";
 import { formatBrl } from "@/lib/format";
 import type { CreditPackage } from "@/services/credits";
 
-type PackageCardProps = {
-  creditPackage: CreditPackage;
+type PackageCardProps = Pick<
+  CreditPackage,
+  "name" | "creditCount" | "pricePerCreditCents" | "totalCents" | "description"
+> & {
   selected: boolean;
   onChoose: () => void;
 };
 
-function PackageCard({ creditPackage, selected, onChoose }: PackageCardProps) {
-  const { name, creditCount, pricePerCreditCents, totalCents, description } =
-    creditPackage;
+function PackageCard({
+  name,
+  creditCount,
+  pricePerCreditCents,
+  totalCents,
+  description,
+  selected,
+  onChoose,
+}: PackageCardProps) {
 
   return (
     <Card

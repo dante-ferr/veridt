@@ -83,6 +83,29 @@ const orders: CreditOrder[] = [
   },
 ];
 
+export type Billing = {
+  fullName: string;
+  email: string;
+  phone: string;
+  cpf: string;
+  postalCode: string;
+  street: string;
+  number: string;
+  complement: string;
+  district: string;
+  city: string;
+  state: string;
+};
+
+export type NewCreditOrder = {
+  packageId: string;
+  billing: Billing;
+};
+
+export async function createOrder(_order: NewCreditOrder): Promise<void> {
+  throw new Error("Registro do pedido ainda não está disponível.");
+}
+
 export async function listPackages(): Promise<CreditPackage[]> {
   return packages;
 }

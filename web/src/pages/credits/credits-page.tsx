@@ -69,7 +69,11 @@ export default function CreditsPage() {
         {packages.map((item) => (
           <PackageCard
             key={item.id}
-            creditPackage={item}
+            name={item.name}
+            creditCount={item.creditCount}
+            pricePerCreditCents={item.pricePerCreditCents}
+            totalCents={item.totalCents}
+            description={item.description}
             selected={item.id === selectedPackageId}
             onChoose={() => choose(item.id)}
           />
