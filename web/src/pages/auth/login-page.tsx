@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { ActionRow } from "@/components/ui/action-row";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -64,12 +65,12 @@ export default function LoginPage() {
             error={errors.password?.message}
             {...register("password")}
           />
-          <div className="flex items-center justify-between gap-4">
+          <ActionRow>
             <TextLink to="/forgot-password">Esqueci minha senha</TextLink>
             <Button type="submit" disabled={isSubmitting}>
               Entrar
             </Button>
-          </div>
+          </ActionRow>
           <Hint>
             Após 5 tentativas sem sucesso, o acesso fica bloqueado por alguns
             minutos.

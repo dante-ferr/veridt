@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { ActionRow } from "@/components/ui/action-row";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -50,10 +51,10 @@ export default function ResetPasswordPage() {
         <Card className="w-full max-w-[420px]">
           <Heading>Nova senha</Heading>
           <Alert>Link inválido ou expirado.</Alert>
-          <div className="flex items-center justify-between gap-4">
+          <ActionRow>
             <TextLink to="/login">Voltar ao login</TextLink>
             <TextLink to="/forgot-password">Pedir novo link</TextLink>
-          </div>
+          </ActionRow>
         </Card>
       </AuthLayout>
     );
@@ -94,12 +95,12 @@ export default function ResetPasswordPage() {
             error={errors.passwordConfirmation?.message}
             {...register("passwordConfirmation")}
           />
-          <div className="flex items-center justify-between gap-4">
+          <ActionRow>
             <TextLink to="/login">Voltar ao login</TextLink>
             <Button type="submit" disabled={isSubmitting}>
               Salvar senha
             </Button>
-          </div>
+          </ActionRow>
         </form>
       </Card>
     </AuthLayout>

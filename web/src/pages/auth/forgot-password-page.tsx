@@ -2,6 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { ActionRow } from "@/components/ui/action-row";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -72,12 +73,12 @@ export default function ForgotPasswordPage() {
             Por segurança, a mensagem é a mesma quando o e-mail não está
             cadastrado. O link expira após o primeiro uso.
           </Hint>
-          <div className="flex items-center justify-between gap-4">
+          <ActionRow>
             <TextLink to="/login">Voltar ao login</TextLink>
             <Button variant="outline" onClick={resend} disabled={resending}>
               Reenviar link
             </Button>
-          </div>
+          </ActionRow>
         </Card>
       ) : (
         <Card asChild className="w-full max-w-[420px]">
@@ -97,12 +98,12 @@ export default function ForgotPasswordPage() {
               error={errors.email?.message}
               {...register("email")}
             />
-            <div className="flex items-center justify-between gap-4">
+            <ActionRow>
               <TextLink to="/login">Voltar ao login</TextLink>
               <Button type="submit" disabled={isSubmitting}>
                 Enviar link
               </Button>
-            </div>
+            </ActionRow>
           </form>
         </Card>
       )}

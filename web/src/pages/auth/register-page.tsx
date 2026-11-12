@@ -2,6 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { ActionRow } from "@/components/ui/action-row";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
 import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
-import { maskCpf, onlyDigits } from "@/lib/cpf";
+import { maskCpf, onlyDigits } from "@/lib/masks";
 import { register as registerAccount, type Profile } from "@/services/auth";
 import { registerSchema, type RegisterValues } from "./register-schema";
 
@@ -205,12 +206,12 @@ export default function RegisterPage() {
                 </p>
               ) : null}
             </div>
-            <div className="flex items-center justify-between gap-4">
+            <ActionRow>
               <TextLink to="/login">Já tenho conta</TextLink>
               <Button type="submit" disabled={isSubmitting}>
                 Criar conta
               </Button>
-            </div>
+            </ActionRow>
           </form>
         </Card>
       )}
