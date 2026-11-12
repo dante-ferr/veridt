@@ -150,8 +150,8 @@ export class RefreshSession {
 export class LogOut {
   constructor(private readonly store: IdentityStore) {}
 
-  async execute(accountId: string, refreshToken: string, now: Date): Promise<Result<null>> {
-    await this.store.revokeSession(this.store.hmacRefresh(refreshToken), accountId, now)
+  async execute(refreshToken: string, now: Date): Promise<Result<null>> {
+    await this.store.revokeSession(this.store.hmacRefresh(refreshToken), now)
     return ok(null)
   }
 }

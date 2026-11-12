@@ -227,9 +227,9 @@ export class PrismaIdentityStore extends IdentityStore implements OnModuleInit {
     }
   }
 
-  async revokeSession(refreshHmac: string, accountId: string, now: Date): Promise<void> {
+  async revokeSession(refreshHmac: string, now: Date): Promise<void> {
     await this.prisma.session.updateMany({
-      where: { refreshHmac, accountId, revokedAt: null },
+      where: { refreshHmac, revokedAt: null },
       data: { revokedAt: now },
     })
   }

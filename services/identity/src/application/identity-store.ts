@@ -72,7 +72,7 @@ export abstract class IdentityStore {
   abstract saveLoginState(accountId: string, state: LoginState): Promise<void>
   abstract createSession(accountId: string, refreshHmac: string, expiresAt: Date): Promise<void>
   abstract findSession(refreshHmac: string): Promise<StoredSession | null>
-  abstract revokeSession(refreshHmac: string, accountId: string, now: Date): Promise<void>
+  abstract revokeSession(refreshHmac: string, now: Date): Promise<void>
   abstract confirmEmail(tokenHmac: string, now: Date): Promise<'ok' | 'invalid'>
   abstract countPasswordResets(accountId: string, since: Date): Promise<number>
   abstract savePasswordReset(data: PasswordResetDraft): Promise<void>

@@ -11,6 +11,7 @@ export class Config {
     readonly serviceToken: string,
     readonly issuer: string,
     readonly audience: string,
+    readonly cookieSecure: boolean,
   ) {}
 
   static read(): Config {
@@ -26,6 +27,7 @@ export class Config {
       required('IDENTITY_SERVICE_TOKEN'),
       process.env.JWT_ISSUER ?? 'veridt-identity',
       process.env.JWT_AUDIENCE ?? 'veridt',
+      process.env.COOKIE_SECURE !== 'false',
     )
   }
 }

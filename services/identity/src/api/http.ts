@@ -11,6 +11,7 @@ import {
   Param,
   Post,
   Body,
+  Res,
 } from '@nestjs/common'
 import { ZodError } from 'zod'
 import { IdentityStore } from '../application/identity-store'
@@ -25,8 +26,12 @@ import {
   RequestPasswordReset,
   ResetPassword,
 } from '../application/use-cases'
-import { credentialsBody, emailBody, refreshBody, registerBody, resetBody, tokenBody } from './schemas'
+import { credentialsBody, emailBody, registerBody, resetBody, tokenBody } from './schemas'
+import { clearRefreshCookie, readRefreshCookie, serializeRefreshCookie } from './session-cookie'
+import { refreshExpiry } from '../domain/policy'
 import { Config } from '../infrastructure/config'
+
+type CookieResponse = { setHeader(name: string, value: string): unknown }
 
 export function bearer(header: string | undefined): string | null {
   if (!header) return null
@@ -86,36 +91,35 @@ export class SessionsController {
     private readonly logIn: LogIn,
     private readonly refreshSession: RefreshSession,
     private readonly logOut: LogOut,
-    private readonly store: IdentityStore,
+    private readonly config: Config,
   ) {}
 
   @Post()
   @HttpCode(200)
-  login(@Body() body: unknown) {
+  async login(@Body() body: unknown, @Res({ passthrough: true }) response: CookieResponse) {
     const input = credentialsBody.parse(body)
-    return this.logIn.execute(input.email, input.password, new Date()).then(send)
+    const now = new Date()
+    const { refreshToken, ...session } = send(await this.logIn.execute(input.email, input.password, now))
+    response.setHeader('Set-Cookie', serializeRefreshCookie(refreshToken, refreshExpiry(now), now, this.config.cookieSecure))
+    return session
   }
 
   @Post('refresh')
   @HttpCode(200)
-  refresh(@Body() body: unknown) {
-    const input = refreshBody.parse(body)
-    return this.refreshSession.execute(input.refreshToken, new Date()).then(send)
+  async refresh(@Headers('cookie') cookie: string | undefined, @Res({ passthrough: true }) response: CookieResponse) {
+    const refreshToken = readRefreshCookie(cookie)
+    if (!refreshToken) throw new HttpException({ error: 'unauthenticated', message: 'Sign in to continue.' }, 401)
+    const result = await this.refreshSession.execute(refreshToken, new Date())
+    if (!result.ok) response.setHeader('Set-Cookie', clearRefreshCookie(this.config.cookieSecure))
+    return send(result)
   }
 
   @Post('logout')
   @HttpCode(204)
-  async logout(@Headers('authorization') authorization: string | undefined, @Body() body: unknown) {
-    const accessToken = bearer(authorization)
-    if (!accessToken) throw new HttpException({ error: 'unauthenticated', message: 'Sign in to continue.' }, 401)
-    let access: { sub: string }
-    try {
-      access = await this.store.verifyAccessToken(accessToken)
-    } catch {
-      throw new HttpException({ error: 'unauthenticated', message: 'Sign in to continue.' }, 401)
-    }
-    const input = refreshBody.parse(body)
-    send(await this.logOut.execute(access.sub, input.refreshToken, new Date()))
+  async logout(@Headers('cookie') cookie: string | undefined, @Res({ passthrough: true }) response: CookieResponse) {
+    const refreshToken = readRefreshCookie(cookie)
+    if (refreshToken) send(await this.logOut.execute(refreshToken, new Date()))
+    response.setHeader('Set-Cookie', clearRefreshCookie(this.config.cookieSecure))
   }
 }
 

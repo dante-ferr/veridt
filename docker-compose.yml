@@ -49,6 +49,7 @@ services:
       JWT_ISSUER: veridt-identity
       JWT_AUDIENCE: veridt
       IDENTITY_SERVICE_TOKEN: ${IDENTITY_SERVICE_TOKEN:-identity_service_local}
+      COOKIE_SECURE: "false"
       TZ: America/Sao_Paulo
     volumes:
       - identity-secrets:/var/lib/veridt

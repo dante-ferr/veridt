@@ -13,7 +13,7 @@ const routes: Record<string, RouteClass> = {
   'GET /v1/credit-orders': 'protected',
   'POST /v1/credit-orders': 'protected',
   'GET /v1/me': 'protected',
-  'POST /v1/sessions/logout': 'protected',
+  'POST /v1/sessions/logout': 'public',
 }
 
 export function classifyRoute(method: string, path: string): RouteClass {

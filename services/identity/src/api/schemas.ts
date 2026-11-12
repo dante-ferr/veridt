@@ -16,10 +16,6 @@ export const credentialsBody = z.object({
   password: z.string(),
 })
 
-export const refreshBody = z.object({
-  refreshToken: z.string().min(20),
-})
-
 export const emailBody = z.object({
   email: z.string(),
 })

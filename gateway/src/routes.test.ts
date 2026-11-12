@@ -12,12 +12,15 @@ describe('routes', () => {
     expect(classifyRoute('GET', '/v1/keys/jwks')).toBe('public')
   })
 
+  it('keeps logout public so an expired access token can still sign out', () => {
+    expect(classifyRoute('POST', '/v1/sessions/logout')).toBe('public')
+  })
+
   it('protects the signed-in routes and rejects unknown ones', () => {
     expect(classifyRoute('GET', '/v1/credit-packages')).toBe('protected')
     expect(classifyRoute('POST', '/v1/credit-orders')).toBe('protected')
     expect(classifyRoute('GET', '/v1/credit-orders/4f0b1a0e-6d2c-4a1e-9b55-0c2a6d9e1f10')).toBe('protected')
     expect(classifyRoute('GET', '/v1/me')).toBe('protected')
-    expect(classifyRoute('POST', '/v1/sessions/logout')).toBe('protected')
     expect(classifyRoute('GET', '/v1/accounts')).toBe('missing')
     expect(classifyRoute('POST', '/v1/credit-orders/4f0b1a0e-6d2c-4a1e-9b55-0c2a6d9e1f10/test-payment')).toBe('missing')
     expect(classifyRoute('POST', '/v1/payments/webhooks/mercadopago')).toBe('missing')

@@ -85,6 +85,7 @@ async function proxy(request: FastifyRequest, reply: FastifyReply, upstreamName:
   const contentType = request.headers['content-type']
   if (typeof contentType === 'string') headers.set('content-type', contentType)
   if (typeof request.headers.authorization === 'string') headers.set('authorization', request.headers.authorization)
+  if (typeof request.headers.cookie === 'string') headers.set('cookie', request.headers.cookie)
   const hasBody = request.method !== 'GET' && request.method !== 'HEAD'
   try {
     const upstream = await fetch(new URL(request.url, base), {
@@ -95,6 +96,8 @@ async function proxy(request: FastifyRequest, reply: FastifyReply, upstreamName:
     reply.status(upstream.status)
     const type = upstream.headers.get('content-type')
     if (type) reply.header('content-type', type)
+    const cookies = upstream.headers.getSetCookie()
+    if (cookies.length > 0) reply.header('set-cookie', cookies)
     if (upstream.status === 204) {
       reply.send()
       return
