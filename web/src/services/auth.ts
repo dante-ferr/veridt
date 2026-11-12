@@ -8,6 +8,22 @@ export type PasswordReset = {
   password: string;
 };
 
+export type Profile = "lawyer" | "common_user";
+
+export type Registration = {
+  profile: Profile;
+  fullName: string;
+  email: string;
+  cpf: string;
+  oab?: string;
+  password: string;
+  acceptedTerms: boolean;
+};
+
+export async function register(_registration: Registration): Promise<void> {
+  throw new Error("Cadastro ainda não está disponível.");
+}
+
 export async function signIn(_credentials: Credentials): Promise<void> {
   throw new Error("Login ainda não está disponível.");
 }
