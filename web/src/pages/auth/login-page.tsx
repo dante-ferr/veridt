@@ -11,31 +11,28 @@ import { Heading } from "@/components/ui/heading";
 import { Hint } from "@/components/ui/hint";
 import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
-import { signIn } from "@/services/auth";
+import { useSignIn } from "@/hooks/session/use-sign-in";
+import { applyApiError } from "@/lib/api-error";
 import { loginSchema, type LoginValues } from "./login-schema";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const signIn = useSignIn();
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(values: LoginValues) {
-    try {
-      await signIn(values);
-      navigate("/records");
-    } catch (caught) {
-      setError("root", {
-        message:
-          caught instanceof Error ? caught.message : "Não foi possível entrar.",
-      });
-    }
+  function onSubmit(values: LoginValues) {
+    signIn.mutate(values, {
+      onSuccess: () => navigate("/credits", { replace: true }),
+      onError: (error) => applyApiError(error, setError),
+    });
   }
 
   return (
@@ -67,7 +64,7 @@ export default function LoginPage() {
           />
           <ActionRow>
             <TextLink to="/forgot-password">Esqueci minha senha</TextLink>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={signIn.isPending}>
               Entrar
             </Button>
           </ActionRow>

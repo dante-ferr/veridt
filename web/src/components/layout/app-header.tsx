@@ -14,9 +14,15 @@ type AppHeaderProps = {
   userName: string;
   balance: number;
   onSignOut: () => void;
+  signingOut: boolean;
 };
 
-function AppHeader({ userName, balance, onSignOut }: AppHeaderProps) {
+function AppHeader({
+  userName,
+  balance,
+  onSignOut,
+  signingOut,
+}: AppHeaderProps) {
   return (
     <header className="flex flex-col items-start gap-4 bg-surface px-6 py-4 shadow-[inset_0_-1px_0_var(--line)] md:flex-row md:items-center md:justify-between md:gap-6">
       <div className="flex flex-wrap items-center gap-6">
@@ -39,7 +45,7 @@ function AppHeader({ userName, balance, onSignOut }: AppHeaderProps) {
           Saldo {balance} créditos
         </span>
         <span className="text-[15px] leading-[22px] text-ink">{userName}</span>
-        <Button variant="outline" onClick={onSignOut}>
+        <Button variant="outline" onClick={onSignOut} disabled={signingOut}>
           Sair
         </Button>
       </div>
