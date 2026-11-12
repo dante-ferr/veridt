@@ -12,15 +12,15 @@ Serviço em `services/identity`. A conta guarda o perfil `lawyer` ou `common_use
 | :--- | :--- | :--- |
 | `POST /v1/accounts` | pública | Cria a conta e publica `EmailConfirmationRequested` |
 | `POST /v1/accounts/confirmation` | pública | Confirma o e-mail com o token de uso único |
-| `POST /v1/sessions` | pública | Entra e devolve access token e refresh token |
-| `POST /v1/sessions/refresh` | pública | Renova o access token |
-| `POST /v1/sessions/logout` | Bearer | Revoga o refresh token |
+| `POST /v1/sessions` | pública | Entra, devolve o access token e grava o refresh token no cookie |
+| `POST /v1/sessions/refresh` | cookie | Renova o access token |
+| `POST /v1/sessions/logout` | cookie | Revoga o refresh token e limpa o cookie |
 | `POST /v1/password-recoveries` | pública | Publica `PasswordResetRequested` se a conta existir |
 | `POST /v1/password-resets` | pública | Troca a senha e revoga as sessões |
 | `GET /v1/me` | Bearer | Devolve id, nome, e-mail e perfil |
 | `GET /v1/keys/jwks` | pública | Chave pública do access token |
 
-O access token dura 15 minutos. O refresh dura 7 dias. Cinco senhas erradas bloqueiam a conta por 15 minutos. O token de confirmação dura 24 horas. O token de redefinição dura 30 minutos.
+O access token dura 15 minutos e vai no corpo da resposta, como `{ accessToken, expiresAt }`. O refresh token dura 7 dias e só existe no cookie `veridt_refresh` (`HttpOnly`, `SameSite=Strict`, `Path=/v1/sessions`, `Secure` salvo com `COOKIE_SECURE=false`). Sem cookie válido, o refresh responde 401 e limpa o cookie. O logout não exige Bearer, para funcionar com o access token já vencido. O gateway repassa `Cookie` e `Set-Cookie`. Cinco senhas erradas bloqueiam a conta por 15 minutos. O token de confirmação dura 24 horas. O token de redefinição dura 30 minutos.
 
 A notificação em `services/notification` consome a exchange `veridt.events` e envia o e-mail. Os links apontam para `PUBLIC_WEB_ORIGIN` (`http://localhost:5173` na composição local), nos caminhos `/confirm` e `/reset-password`. A interface já tem `/reset-password`. A rota `/confirm` ainda não existe.
 

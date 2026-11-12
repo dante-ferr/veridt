@@ -93,6 +93,10 @@ A tela `/credits` (REQ 05, passo 1) lista os pacotes de `web/src/services/credit
 
 A tela `/credits/billing` (passo 2) pede comprador e endereço com as mesmas regras do `POST /v1/credit-orders`. Quando o envio dá certo, a seleção é limpa e a tela volta para `/credits`. O passo 3, pagamento, aparece nos passos mas é o REQ 06.
 
+## 17. Sessão com refresh token em cookie
+
+Decidido em 2026-11-12. O refresh token sai do corpo das respostas e vai para um cookie `HttpOnly`, fora do alcance de JavaScript. O access token fica em memória na interface, numa store `zustand`. O logout passou a ser rota pública no gateway e revoga a sessão pelo cookie, sem depender do access token. O refresh token não é trocado a cada uso; a rotação fica para depois. Detalhe em [Fluxos](fluxos.md).
+
 ## O que ainda está aberto
 
 | Item em aberto | Quando se resolve |
