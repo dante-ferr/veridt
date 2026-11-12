@@ -34,15 +34,15 @@ O livro registra método, decisão, mapa e roteiro no momento em que o trabalho 
 
 Fechada em 2026-11-11, com o pedido de implementação e a sugestão já registrada:
 
-| Peça | Escolha |
-| :--- | :--- |
-| Linguagem | TypeScript |
-| Interface | React com Vite (detalhe no item 12) |
-| Gateway | Fastify |
-| Serviços | NestJS |
+| Peça         | Escolha                                    |
+| :----------- | :----------------------------------------- |
+| Linguagem    | TypeScript                                 |
+| Interface    | React com Vite (detalhe no item 12)        |
+| Gateway      | Fastify                                    |
+| Serviços     | NestJS                                     |
 | Persistência | Prisma e PostgreSQL, um schema por serviço |
-| Fila | RabbitMQ, só para o e-mail de identidade |
-| E-mail local | Mailpit |
+| Fila         | RabbitMQ, só para o e-mail de identidade   |
+| E-mail local | Mailpit                                    |
 
 ## 9. Fronteira do REQ 05
 
@@ -56,10 +56,10 @@ O cadastro persiste a conta e publica `EmailConfirmationRequested`. O login resp
 
 Os eventos deste recorte usam identificadores em inglês:
 
-| Evento | Quando |
-| :--- | :--- |
-| `EmailConfirmationRequested` | Depois de um cadastro válido |
-| `PasswordResetRequested` | Depois de um pedido de recuperação para uma conta existente |
+| Evento                       | Quando                                                      |
+| :--------------------------- | :---------------------------------------------------------- |
+| `EmailConfirmationRequested` | Depois de um cadastro válido                                |
+| `PasswordResetRequested`     | Depois de um pedido de recuperação para uma conta existente |
 
 A exchange é `veridt.events`. O emissor do JWT é `veridt-identity` e a audiência é `veridt`.
 
@@ -97,12 +97,19 @@ A tela `/credits/billing` (passo 2) pede comprador e endereço com as mesmas reg
 
 Decidido em 2026-11-12. O refresh token sai do corpo das respostas e vai para um cookie `HttpOnly`, fora do alcance de JavaScript. O access token fica em memória na interface, numa store `zustand`. O logout passou a ser rota pública no gateway e revoga a sessão pelo cookie, sem depender do access token. O refresh token não é trocado a cada uso; a rotação fica para depois. Detalhe em [Fluxos](fluxos.md).
 
+## 18. Integração da interface com a API
+
+Decidido em 2026-11-12. A interface chama a API com `axios` (`web/src/lib/http.ts`, base `/v1`) e guarda as respostas com TanStack Query. Cada chamada tem um hook em `web/src/hooks/<domínio>/`: `useGet…` para leitura (`useQuery`) e `use<Ação>` para escrita (`useMutation`), como `useSignIn`, `useRegister` e `useBuyCredits`. As chaves de cache usam `@lukemorales/query-key-factory`: cada domínio declara as suas em `hooks/<domínio>/keys.ts` e `web/src/lib/query-keys.ts` junta tudo em `queryKeys`. Os tipos da API são escritos à mão em `web/src/services/`.
+
+O access token fica na store `zustand` de sessão, só em memória. Um interceptor do axios põe o Bearer e, numa resposta 401, faz um único refresh pelo cookie (compartilhado entre requisições simultâneas) e repete a requisição. Se o refresh falhar, a sessão é limpa.
+
+A guarda de rotas usa o `middleware` do React Router (`web/src/app/middleware/`): `requireSession` nas telas logadas e `redirectIfAuthenticated` em entrar, cadastrar e recuperar senha. Ao abrir o app, o middleware tenta o refresh uma vez para restaurar a sessão. É proteção de experiência; quem protege os dados é o gateway.
+
+Os erros da API são traduzidos pelo código (`web/src/lib/api-error.ts`) e vão para o campo do formulário quando há um campo correspondente. O saldo do header fica fixo em 0 no front até existir pagamento. No histórico de compras, a coluna Forma mostra "—" e o estado `billing_recorded` aparece como "FATURAMENTO · Registrado".
+
 ## O que ainda está aberto
 
-| Item em aberto | Quando se resolve |
-| :--- | :--- |
-| Ligar `web/src/services/` à API de [Fluxos](fluxos.md) no lugar dos stubs. | Na integração da interface com o backend |
-| Confirmação de e-mail na interface. O backend exige confirmação (item 10), mas a tela de cadastro ainda mostra "Conta criada" e não existe a rota `/confirm`. | Na integração da interface com o backend |
-| Histórico de compras. A interface simula pedidos com estados de pagamento e forma de pagamento; o backend só tem `billing_recorded` e não tem forma de pagamento. | Na integração da interface com o backend |
-| Nome e saldo no header. O nome pode vir de `GET /v1/me`; o backend não tem saldo. | Na integração da interface com o backend |
-| Cada fatiamento SOLID que mude módulos, portas ou hierarquia além do que está em [SOLID](solid.md). | No momento em que a alternativa aparecer |
+| Item em aberto                                                                                                            | Quando se resolve                        |
+| :------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------- |
+| Saldo de créditos. O header mostra 0 fixo; não há endpoint porque nenhum crédito é concedido antes do pagamento (REQ 06). | Quando o pagamento entrar no escopo      |
+| Cada fatiamento SOLID que mude módulos, portas ou hierarquia além do que está em [SOLID](solid.md).                       | No momento em que a alternativa aparecer |

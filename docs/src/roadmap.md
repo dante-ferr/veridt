@@ -4,16 +4,17 @@ Trabalho ainda aberto. O comportamento que já vale está em [Fluxos](fluxos.md)
 
 ## 1. Telas do escopo
 
-As telas existem em `web/` com serviços simulados (`web/src/services/`):
+As telas existem em `web/` e estão integradas à API descrita em [Fluxos](fluxos.md):
 
-- REQ 01: cadastrar advogado e usuário comum.
+- REQ 01: cadastrar advogado e usuário comum, com confirmação de e-mail (`/confirm`).
 - REQ 02: recuperar senha (pedir link e definir nova senha).
-- REQ 03 e REQ 04: entrar e sair.
-- REQ 05: comprar créditos (passo 1, pacote) e faturamento (passo 2). O pagamento (passo 3) é o REQ 06 e fica fora.
+- REQ 03 e REQ 04: entrar e sair, com a sessão restaurada pelo cookie ao recarregar a página.
+- REQ 05: comprar créditos (passo 1, pacote) e faturamento (passo 2), com o pedido gravado como `billing_recorded` e listado no histórico. O pagamento (passo 3) é o REQ 06 e fica fora.
 
-## 2. Integração da interface com o backend
+## 2. Pendências
 
-Trocar os stubs pela API descrita em [Fluxos](fluxos.md) e resolver os itens em aberto de [Decisões registradas](decisoes.md): confirmação de e-mail (tela `/confirm`), histórico de compras, nome e saldo no header, e a sessão (tokens e `signOut`) numa store `zustand`.
+- Saldo de créditos real, junto com o pagamento (REQ 06).
+- Testes automatizados da interface.
 
 ## Fora deste roteiro
 

@@ -2,7 +2,7 @@
 
 Este arquivo é o plano do projeto. Agentes e desenvolvedores seguem este plano até o desenvolvedor o alterar. O livro em `docs/` registra o método. Se o livro e este arquivo divergirem sobre o método, vale o que estiver mais recente e explícito; na dúvida, pergunte.
 
-O backend dos REQ 01 a REQ 05 está no repositório, e as telas desses requisitos estão em `web/` (Vite, React, TypeScript, Tailwind e shadcn/ui), ainda com serviços simulados. Não amplie o escopo para os requisitos seguintes enquanto o desenvolvedor não pedir.
+O backend dos REQ 01 a REQ 05 está no repositório, e as telas desses requisitos estão em `web/` (Vite, React, TypeScript, Tailwind e shadcn/ui), integradas à API. Não amplie o escopo para os requisitos seguintes enquanto o desenvolvedor não pedir.
 
 ## Texto do plano
 
@@ -99,6 +99,7 @@ Ao adaptar, reescreva identificadores para inglês. O sketch ainda usa o nome in
 - Estado global: `zustand`, só quando houver estado compartilhado entre telas. Não instale antes de precisar. Estado de uma tela fica local.
 - Páginas em `web/src/pages/`, com `export default` na própria declaração (`export default function LoginPage()`). Componentes com export nomeado.
 - Componentes seguem SRP (uma responsabilidade cada), OCP por composição no padrão do shadcn e ISP: props só com o que o componente usa, com `Pick<>` do tipo de domínio em vez do objeto inteiro. Detalhe em [SOLID](docs/src/solid.md).
+- Chamadas à API: funções com axios e tipos escritos à mão em `web/src/services/`, consumidas só por hooks do TanStack Query em `web/src/hooks/<domínio>/` (`useGet…` para leitura, `use<Ação>` para escrita). Chaves de cache com `@lukemorales/query-key-factory`, unidas em `web/src/lib/query-keys.ts`. Erros da API passam por `web/src/lib/api-error.ts`. Detalhe em [Decisões](docs/src/decisoes.md), item 18.
 
 ## Comentários no código
 
