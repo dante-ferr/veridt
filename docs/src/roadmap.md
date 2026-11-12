@@ -10,7 +10,7 @@ Responder a tabela em aberto de [Decisões registradas](decisoes.md): stack, fro
 
 Cadastrar advogado e usuário comum, recuperar senha, entrar e sair, na arquitetura de [Mapa da arquitetura](arquitetura.md). Reaproveitar o sketch só nesses fluxos.
 
-Andamento: as telas de entrar (REQ 03) e de recuperar senha (REQ 02: pedir link e definir nova senha) existem na interface, mas ainda não estão integradas ao backend.
+Andamento: as telas de cadastrar (REQ 01), entrar (REQ 03) e recuperar senha (REQ 02: pedir link e definir nova senha) existem na interface, mas ainda não estão integradas ao backend.
 
 ## 3. REQ 05
 

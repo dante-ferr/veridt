@@ -42,11 +42,15 @@ O visual segue as telas do Figma do repositório de referência. A paleta e as f
 
 ## 9. Rotas e login sem backend
 
-Decidido em 2026-11-11. As rotas usam `react-router` e ficam em `web/src/app/router.tsx`: `/` e `/login` levam ao login, `/forgot-password` e `/reset-password?token=` cobrem a recuperação de senha, e `/records` é uma tela vazia que serve só de destino depois do login. Listar registros (REQ 12) continua fora do escopo. As telas de login e de recuperação de senha estão prontas, mas as funções de `web/src/services/auth.ts` ainda lançam erro. O contrato com o gateway se decide junto com o backend.
+Decidido em 2026-11-11. As rotas usam `react-router` e ficam em `web/src/app/router.tsx`: `/` e `/login` levam ao login, `/register` ao cadastro, `/forgot-password` e `/reset-password?token=` cobrem a recuperação de senha, e `/records` é uma tela vazia que serve só de destino depois do login. Listar registros (REQ 12) continua fora do escopo. As telas de login, cadastro e recuperação de senha estão prontas, mas as funções de `web/src/services/auth.ts` ainda lançam erro. O contrato com o gateway se decide junto com o backend.
 
 ## 10. Formulários e estado global
 
 Decidido em 2026-11-11. Formulários usam `react-hook-form` com validação por schema `zod`. Estado global usa `zustand`, adotado só quando alguma tela precisar dele.
+
+## 11. Cadastro sem confirmação de e-mail
+
+Decidido em 2026-11-11. O cadastro (REQ 01) não exige confirmação de e-mail: depois de criar a conta, a tela mostra "Conta criada" e leva ao login. O formulário pede tipo de conta (advogado ou usuário comum), nome, e-mail, CPF (com dígitos verificadores), OAB no formato `UF 000000` só para advogado, senha com no mínimo 8 caracteres e aceite dos termos.
 
 ## O que ainda está aberto
 
@@ -54,6 +58,5 @@ Decidido em 2026-11-11. Formulários usam `react-hook-form` com validação por 
 | :--- | :--- |
 | Stack do backend (framework de serviço, ORM). A interface já está decidida (item 8). `tecnologias.md` do repositório de referência é proposta. Sugestão: a stack já usada no sketch (gateway Fastify, serviços NestJS, Prisma, PostgreSQL, RabbitMQ), confirmada antes de escrever código. | Antes da primeira linha de código de backend |
 | Fronteira entre comprar créditos (REQ 05) e efetuar pagamento (REQ 06). Sugestão: escolher pacote e gravar faturamento; não executar pagamento. | Antes de implementar a compra de créditos |
-| Confirmação de e-mail no cadastro. O plano de arquitetura prevê esse passo. O recorte mínimo do REQ 01 é persistir a conta válida. | Antes de implementar o cadastro |
 | Nomes dos eventos. O catálogo de referência usa nomes em português. O código deste repositório é em inglês. | Antes do primeiro evento |
 | Cada fatiamento SOLID que mude módulos, portas ou hierarquia. | No momento em que a alternativa aparecer |
