@@ -16,6 +16,8 @@ Andamento: as telas de cadastrar (REQ 01), entrar (REQ 03) e recuperar senha (RE
 
 Escolha de pacote e faturamento, no limite que o desenvolvedor confirmar. Pacotes da primeira versão no enunciado: básico, médio e premium.
 
+Andamento: a tela de comprar créditos (passo 1, pacote) existe na interface, com os pacotes fixos no código e o histórico de compras simulado. A tela de faturamento ainda está vazia.
+
 ## Fora deste roteiro
 
 Estes títulos existem no PDF e não entram no trabalho até pedido explícito: efetuar pagamento de créditos, confirmar pagamento por e-mail, iniciar registro de conteúdo, concluir gravação, confirmar gravação por e-mail, concluir captura de tela, confirmar captura por e-mail, listar registros, ver detalhes, gerar relatório, gerar arquivo zip.

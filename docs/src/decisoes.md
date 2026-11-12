@@ -52,6 +52,12 @@ Decidido em 2026-11-11. Formulários usam `react-hook-form` com validação por 
 
 Decidido em 2026-11-11. O cadastro (REQ 01) não exige confirmação de e-mail: depois de criar a conta, a tela mostra "Conta criada" e leva ao login. O formulário pede tipo de conta (advogado ou usuário comum), nome, e-mail, CPF (com dígitos verificadores), OAB no formato `UF 000000` só para advogado, senha com no mínimo 8 caracteres e aceite dos termos.
 
+## 12. Área logada e comprar créditos
+
+Decidido em 2026-11-11. As telas logadas usam `AppLayout` (`web/src/components/layout/`), com o header do sketch: marca, links Registros, Novo registro, Créditos e Minha conta, saldo, nome e Sair. Registros, Novo registro, Minha conta e Faturamento são telas vazias por enquanto; as três primeiras ficam fora do escopo. O header é estático (nome fixo, saldo 0, Sair volta ao login) até a integração com o backend.
+
+A tela `/credits` (REQ 05, passo 1) lista os pacotes de `web/src/services/credits.ts`, fixos no código como no enunciado, e mostra o histórico de compras com pedidos simulados. O pacote escolhido fica numa store `zustand` (`web/src/stores/credit-purchase-store.ts`), persistida no `sessionStorage`, para a tela de faturamento usar.
+
 ## O que ainda está aberto
 
 | Item em aberto | Quando se resolve |
