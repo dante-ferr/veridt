@@ -98,6 +98,7 @@ Ao adaptar, reescreva identificadores para inglês. O sketch ainda usa o nome in
 - Formulários: `react-hook-form` com schema `zod` (`@hookform/resolvers/zod`). O schema fica ao lado da página (`<nome>-schema.ts`), e as mensagens de validação ficam em português.
 - Estado global: `zustand`, só quando houver estado compartilhado entre telas. Não instale antes de precisar. Estado de uma tela fica local.
 - Páginas em `web/src/pages/`, com `export default` na própria declaração (`export default function LoginPage()`). Componentes com export nomeado.
+- Componentes seguem SRP (uma responsabilidade cada), OCP por composição no padrão do shadcn e ISP: props só com o que o componente usa, com `Pick<>` do tipo de domínio em vez do objeto inteiro. Detalhe em [SOLID](docs/src/solid.md).
 
 ## Comentários no código
 
