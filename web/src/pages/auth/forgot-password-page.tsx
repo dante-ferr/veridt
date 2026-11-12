@@ -11,52 +11,40 @@ import { Heading } from "@/components/ui/heading";
 import { Hint } from "@/components/ui/hint";
 import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
-import { requestPasswordReset } from "@/services/auth";
+import { useRequestPasswordReset } from "@/hooks/auth/use-request-password-reset";
+import { applyApiError, errorMessage } from "@/lib/api-error";
 import {
   forgotPasswordSchema,
   type ForgotPasswordValues,
 } from "./forgot-password-schema";
 
-function errorMessage(caught: unknown) {
-  return caught instanceof Error
-    ? caught.message
-    : "Não foi possível enviar o link.";
-}
-
 export default function ForgotPasswordPage() {
   const [sentTo, setSentTo] = useState<string | null>(null);
-  const [resendError, setResendError] = useState("");
-  const [resending, setResending] = useState(false);
+  const request = useRequestPasswordReset();
+  const resendRequest = useRequestPasswordReset();
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: "" },
   });
 
-  async function onSubmit({ email }: ForgotPasswordValues) {
-    try {
-      await requestPasswordReset(email);
-      setSentTo(email);
-    } catch (caught) {
-      setError("root", { message: errorMessage(caught) });
-    }
+  function onSubmit({ email }: ForgotPasswordValues) {
+    request.mutate(
+      { email },
+      {
+        onSuccess: () => setSentTo(email),
+        onError: (error) => applyApiError(error, setError),
+      },
+    );
   }
 
-  async function resend() {
+  function resend() {
     if (!sentTo) return;
-    setResendError("");
-    setResending(true);
-    try {
-      await requestPasswordReset(sentTo);
-    } catch (caught) {
-      setResendError(errorMessage(caught));
-    } finally {
-      setResending(false);
-    }
+    resendRequest.mutate({ email: sentTo });
   }
 
   return (
@@ -68,14 +56,20 @@ export default function ForgotPasswordPage() {
             Se houver uma conta com este e-mail, você receberá o link em alguns
             minutos.
           </Text>
-          {resendError ? <Alert>{resendError}</Alert> : null}
+          {resendRequest.isError ? (
+            <Alert>{errorMessage(resendRequest.error)}</Alert>
+          ) : null}
           <Hint>
             Por segurança, a mensagem é a mesma quando o e-mail não está
             cadastrado. O link expira após o primeiro uso.
           </Hint>
           <ActionRow>
             <TextLink to="/login">Voltar ao login</TextLink>
-            <Button variant="outline" onClick={resend} disabled={resending}>
+            <Button
+              variant="outline"
+              onClick={resend}
+              disabled={resendRequest.isPending}
+            >
               Reenviar link
             </Button>
           </ActionRow>
@@ -100,7 +94,7 @@ export default function ForgotPasswordPage() {
             />
             <ActionRow>
               <TextLink to="/login">Voltar ao login</TextLink>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={request.isPending}>
                 Enviar link
               </Button>
             </ActionRow>

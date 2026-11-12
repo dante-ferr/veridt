@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch, type Path } from "react-hook-form";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { ActionRow } from "@/components/ui/action-row";
 import { Alert } from "@/components/ui/alert";
@@ -14,18 +13,32 @@ import { Label } from "@/components/ui/label";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
 import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
+import { useRegister } from "@/hooks/auth/use-register";
+import { applyApiError } from "@/lib/api-error";
 import { maskCpf, onlyDigits } from "@/lib/masks";
-import { register as registerAccount, type Profile } from "@/services/auth";
+import type { Profile } from "@/services/auth";
 import { registerSchema, type RegisterValues } from "./register-schema";
 
+const fieldsByCode: Partial<Record<string, Path<RegisterValues>>> = {
+  email_in_use: "email",
+  invalid_email: "email",
+  cpf_in_use: "cpf",
+  invalid_cpf: "cpf",
+  invalid_oab: "oab",
+  invalid_name: "fullName",
+  password_too_short: "password",
+  password_mismatch: "passwordConfirmation",
+  terms_required: "acceptedTerms",
+};
+
 export default function RegisterPage() {
-  const [done, setDone] = useState(false);
+  const registration = useRegister();
   const {
     register,
     control,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -41,35 +54,30 @@ export default function RegisterPage() {
   });
   const profile = useWatch({ control, name: "profile" });
 
-  async function onSubmit(values: RegisterValues) {
-    try {
-      await registerAccount({
+  function onSubmit(values: RegisterValues) {
+    registration.mutate(
+      {
         profile: values.profile,
         fullName: values.fullName,
         email: values.email,
         cpf: onlyDigits(values.cpf),
         oab: values.profile === "lawyer" ? values.oab.toUpperCase() : undefined,
         password: values.password,
+        passwordConfirmation: values.passwordConfirmation,
         acceptedTerms: values.acceptedTerms,
-      });
-      setDone(true);
-    } catch (caught) {
-      setError("root", {
-        message:
-          caught instanceof Error
-            ? caught.message
-            : "Não foi possível criar a conta.",
-      });
-    }
+      },
+      { onError: (error) => applyApiError(error, setError, fieldsByCode) },
+    );
   }
 
   return (
     <AuthLayout>
-      {done ? (
+      {registration.isSuccess ? (
         <Card className="w-full max-w-[560px]">
-          <Heading size="page">Conta criada</Heading>
+          <Heading size="page">Verifique seu e-mail</Heading>
           <Text muted>
-            Sua conta está pronta. Entre com o e-mail e a senha.
+            Enviamos um link de confirmação. Abra o e-mail e confirme antes de
+            entrar.
           </Text>
           <TextLink to="/login">Ir para o login</TextLink>
         </Card>
@@ -208,7 +216,7 @@ export default function RegisterPage() {
             </div>
             <ActionRow>
               <TextLink to="/login">Já tenho conta</TextLink>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={registration.isPending}>
                 Criar conta
               </Button>
             </ActionRow>

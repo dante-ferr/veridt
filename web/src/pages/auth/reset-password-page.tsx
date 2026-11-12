@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Path } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { ActionRow } from "@/components/ui/action-row";
@@ -11,38 +10,37 @@ import { Field } from "@/components/ui/field";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { TextLink } from "@/components/ui/text-link";
-import { resetPassword } from "@/services/auth";
+import { useResetPassword } from "@/hooks/auth/use-reset-password";
+import { applyApiError } from "@/lib/api-error";
 import {
   resetPasswordSchema,
   type ResetPasswordValues,
 } from "./reset-password-schema";
 
+const fieldsByCode: Partial<Record<string, Path<ResetPasswordValues>>> = {
+  password_too_short: "password",
+  password_mismatch: "passwordConfirmation",
+};
+
 export default function ResetPasswordPage() {
   const [params] = useSearchParams();
   const token = params.get("token") ?? "";
-  const [done, setDone] = useState(false);
+  const reset = useResetPassword();
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: { password: "", passwordConfirmation: "" },
   });
 
-  async function onSubmit({ password }: ResetPasswordValues) {
-    try {
-      await resetPassword({ token, password });
-      setDone(true);
-    } catch (caught) {
-      setError("root", {
-        message:
-          caught instanceof Error
-            ? caught.message
-            : "Não foi possível redefinir a senha.",
-      });
-    }
+  function onSubmit(values: ResetPasswordValues) {
+    reset.mutate(
+      { token, ...values },
+      { onError: (error) => applyApiError(error, setError, fieldsByCode) },
+    );
   }
 
   if (!token) {
@@ -60,7 +58,7 @@ export default function ResetPasswordPage() {
     );
   }
 
-  if (done) {
+  if (reset.isSuccess) {
     return (
       <AuthLayout>
         <Card className="w-full max-w-[420px]">
@@ -97,7 +95,7 @@ export default function ResetPasswordPage() {
           />
           <ActionRow>
             <TextLink to="/login">Voltar ao login</TextLink>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={reset.isPending}>
               Salvar senha
             </Button>
           </ActionRow>
