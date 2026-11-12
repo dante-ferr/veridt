@@ -4,7 +4,4 @@ dist
 .env
 .env.*
 !.env.example
-.AGENTS.md
-package-lock.json
-package.json
 launch.json

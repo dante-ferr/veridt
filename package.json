@@ -1,0 +1,11 @@
+{
+  "name": "veridt",
+  "private": true,
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build -w web"
+  }
+}
