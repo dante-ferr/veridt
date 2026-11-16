@@ -107,6 +107,12 @@ A guarda de rotas usa o `middleware` do React Router (`web/src/app/middleware/`)
 
 Os erros da API são traduzidos pelo código (`web/src/lib/api-error.ts`) e vão para o campo do formulário quando há um campo correspondente. O saldo do header fica fixo em 0 no front até existir pagamento. No histórico de compras, a coluna Forma mostra "—" e o estado `billing_recorded` aparece como "FATURAMENTO · Registrado".
 
+## 19. Ambiente da interface
+
+Decidido em 2026-11-16. A interface lê o ambiente em `web/src/lib/environment.ts`. `make web-dev` (`vite`) é desenvolvimento. O pacote de `vite build` é produção, porque o Vite grava `import.meta.env.PROD` no build. `appEnvironment` vale `"development"` ou `"production"`, e `isDevelopment` é o atalho para o primeiro.
+
+Na tela de faturamento, o botão **Preencher automaticamente** aparece só em desenvolvimento. Ele grava dados de demonstração que passam na validação do pedido. O botão não muda a API.
+
 ## O que ainda está aberto
 
 | Item em aberto                                                                                                            | Quando se resolve                        |

@@ -32,7 +32,7 @@ Captura, registros e relatórios existem no plano completo e ficam sem pasta aqu
 ## O que dá para executar hoje
 
 1. `make up` sobe Postgres, RabbitMQ, Mailpit, identidade, notificação, créditos e o gateway em `http://localhost:8080`.
-2. `make web-dev` abre o Vite em `http://localhost:5173`. O Vite encaminha `/v1` para o gateway.
+2. `make web-dev` abre o Vite em `http://localhost:5173`. O Vite encaminha `/v1` para o gateway. Esse comando é o ambiente de desenvolvimento da interface. O build estático (`vite build`) é produção. A leitura fica em [Decisões](decisoes.md), item 19.
 3. `make test` roda os testes dos pacotes e dos serviços.
 4. `make docs-serve` publica este livro em `http://localhost:3000`.
 

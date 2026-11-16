@@ -17,6 +17,7 @@ import { useBuyCredits } from "@/hooks/credits/use-buy-credits";
 import { useGetCreditPackages } from "@/hooks/credits/use-get-credit-packages";
 import { useGetMe } from "@/hooks/session/use-get-me";
 import { applyApiError, errorMessage } from "@/lib/api-error";
+import { isDevelopment } from "@/lib/environment";
 import { maskCpf, maskPhone, maskPostalCode, onlyDigits } from "@/lib/masks";
 import { useCreditPurchaseStore } from "@/stores/credit-purchase-store";
 import { billingSchema, type BillingValues } from "./billing-schema";
@@ -50,6 +51,7 @@ export default function BillingPage() {
     setError,
     getValues,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<BillingValues>({
     resolver: zodResolver(billingSchema),
@@ -116,6 +118,29 @@ export default function BillingPage() {
         className="grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1fr)_320px]"
       >
         <Card>
+          {isDevelopment ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                reset({
+                  fullName: "Ana Ribeiro",
+                  email: "ana@example.com",
+                  phone: "(11) 98765-4321",
+                  cpf: "390.533.447-05",
+                  postalCode: "01310-100",
+                  street: "Avenida Paulista",
+                  number: "1000",
+                  complement: "Sala 1",
+                  district: "Bela Vista",
+                  city: "São Paulo",
+                  state: "SP",
+                })
+              }
+            >
+              Preencher automaticamente
+            </Button>
+          ) : null}
           <Heading level="h2">Comprador</Heading>
           <Field
             label="Nome completo"
