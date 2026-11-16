@@ -1,6 +1,7 @@
-.PHONY: help docs-serve test up down logs web-dev
+.PHONY: help docs-serve test up down logs web-dev dev
 
 help:
+	@echo "dev         Desenvolvimento local: stack Docker + Vite"
 	@echo "up          Sobe a stack (docker compose up --build)"
 	@echo "down        Para a stack (docker compose down)"
 	@echo "logs        Acompanha os logs do Compose"
@@ -26,4 +27,8 @@ logs:
 	docker compose logs -f
 
 web-dev:
+	npm run dev -w web
+
+dev:
+	docker compose up --build -d
 	npm run dev -w web
