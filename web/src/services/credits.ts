@@ -43,6 +43,10 @@ export type NewCreditOrder = {
   billing: Billing;
 };
 
+export type CreditBalance = {
+  available: number;
+};
+
 type ListResponse<T> = { items: T[] };
 
 export async function listPackages(): Promise<CreditPackage[]> {
@@ -54,6 +58,11 @@ export async function listPackages(): Promise<CreditPackage[]> {
 export async function listOrders(): Promise<CreditOrder[]> {
   const { data } = await http.get<ListResponse<CreditOrder>>("/credit-orders");
   return data.items;
+}
+
+export async function getBalance(): Promise<CreditBalance> {
+  const { data } = await http.get<CreditBalance>("/credits/balance");
+  return data;
 }
 
 export async function createOrder(order: NewCreditOrder): Promise<CreditOrder> {

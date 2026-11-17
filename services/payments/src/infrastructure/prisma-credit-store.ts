@@ -37,19 +37,26 @@ export class PrismaCreditStore extends CreditStore implements OnModuleInit {
   }
 
   async saveOrder(order: StoredOrder): Promise<void> {
-    await this.prisma.creditOrder.create({
-      data: {
-        id: order.id,
-        accountId: order.accountId,
-        packageId: order.packageId,
-        packageName: order.packageName,
-        creditCount: order.creditCount,
-        pricePerCreditCents: order.pricePerCreditCents,
-        totalCents: order.totalCents,
-        state: order.state,
-        billing: order.billing as unknown as Prisma.InputJsonValue,
-        createdAt: order.createdAt,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.creditOrder.create({
+        data: {
+          id: order.id,
+          accountId: order.accountId,
+          packageId: order.packageId,
+          packageName: order.packageName,
+          creditCount: order.creditCount,
+          pricePerCreditCents: order.pricePerCreditCents,
+          totalCents: order.totalCents,
+          state: order.state,
+          billing: order.billing as unknown as Prisma.InputJsonValue,
+          createdAt: order.createdAt,
+        },
+      })
+      await tx.balanceCache.upsert({
+        where: { accountId: order.accountId },
+        create: { accountId: order.accountId, available: order.creditCount },
+        update: { available: { increment: order.creditCount } },
+      })
     })
   }
 
@@ -65,6 +72,11 @@ export class PrismaCreditStore extends CreditStore implements OnModuleInit {
   async findOrder(accountId: string, id: string): Promise<StoredOrder | null> {
     const row = await this.prisma.creditOrder.findFirst({ where: { id, accountId } })
     return row ? toOrder(row) : null
+  }
+
+  async getBalance(accountId: string): Promise<number> {
+    const row = await this.prisma.balanceCache.findUnique({ where: { accountId } })
+    return row?.available ?? 0
   }
 }
 

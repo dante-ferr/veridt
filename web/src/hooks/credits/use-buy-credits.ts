@@ -6,9 +6,15 @@ export function useBuyCredits() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createOrder,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.credits.orders.queryKey,
-      }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.credits.orders.queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.credits.balance.queryKey,
+        }),
+      ]);
+    },
   });
 }

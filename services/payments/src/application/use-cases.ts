@@ -83,6 +83,15 @@ export class GetCreditOrder {
   }
 }
 
+@Injectable()
+export class GetCreditBalance {
+  constructor(private readonly store: CreditStore) {}
+
+  async execute(accountId: string): Promise<{ available: number }> {
+    return { available: await this.store.getBalance(accountId) }
+  }
+}
+
 function present(order: StoredOrder): OrderView {
   return {
     id: order.id,

@@ -35,3 +35,10 @@ model CreditOrder {
   @@index([accountId, createdAt])
   @@map("credit_orders")
 }
+
+model BalanceCache {
+  accountId String @id @map("account_id")
+  available Int
+
+  @@map("balance_cache")
+}

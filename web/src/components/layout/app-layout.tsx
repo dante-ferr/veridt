@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router";
 import { AppHeader } from "@/components/layout/app-header";
+import { useGetCreditBalance } from "@/hooks/credits/use-get-credit-balance";
 import { resetClientState } from "@/hooks/session/reset-client-state";
 import { useGetMe } from "@/hooks/session/use-get-me";
 import { useSignOut } from "@/hooks/session/use-sign-out";
@@ -21,13 +22,14 @@ function AppLayout() {
 
 function SignedInLayout() {
   const me = useGetMe();
+  const balance = useGetCreditBalance();
   const signOut = useSignOut();
 
   return (
     <div className="min-h-svh">
       <AppHeader
         userName={me.data?.fullName ?? "—"}
-        balance={0}
+        balance={balance.data?.available ?? 0}
         onSignOut={() => signOut.mutate()}
         signingOut={signOut.isPending}
       />

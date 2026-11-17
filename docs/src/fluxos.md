@@ -26,14 +26,15 @@ A notificação em `services/notification` consome a exchange `veridt.events` e 
 
 ## Créditos
 
-Serviço em `services/payments`. O pedido não abre cobrança.
+Serviço em `services/payments`. O pedido não abre cobrança. Ao gravar o faturamento, o serviço soma os créditos do pacote em `balance_cache`.
 
-| Método e caminho            | Autenticação | Efeito                                                   |
-| :-------------------------- | :----------- | :------------------------------------------------------- |
-| `GET /v1/credit-packages`   | Bearer       | Lista os pacotes ativos                                  |
-| `POST /v1/credit-orders`    | Bearer       | Grava pacote e faturamento com estado `billing_recorded` |
-| `GET /v1/credit-orders`     | Bearer       | Lista os pedidos da conta                                |
-| `GET /v1/credit-orders/:id` | Bearer       | Lê um pedido da conta                                    |
+| Método e caminho            | Autenticação | Efeito                                                                         |
+| :-------------------------- | :----------- | :----------------------------------------------------------------------------- |
+| `GET /v1/credit-packages`   | Bearer       | Lista os pacotes ativos                                                        |
+| `GET /v1/credits/balance`   | Bearer       | Devolve `{ available }` do saldo da conta                                      |
+| `POST /v1/credit-orders`    | Bearer       | Grava pacote e faturamento (`billing_recorded`) e credita o saldo              |
+| `GET /v1/credit-orders`     | Bearer       | Lista os pedidos da conta                                                      |
+| `GET /v1/credit-orders/:id` | Bearer       | Lê um pedido da conta                                                          |
 
 O corpo de `POST /v1/credit-orders` leva `packageId` e `billing` (`fullName`, `email`, `phone`, `cpf`, `postalCode`, `street`, `number`, `complement`, `district`, `city`, `state`). Não há campo de meio de pagamento.
 
@@ -47,4 +48,4 @@ Pacotes iniciais, gravados na subida do serviço:
 
 ## O que este recorte não faz
 
-Não há saldo, reserva de crédito, webhook, PIX nem checkout. O gateway responde 404 para esses caminhos. Captura, registros e relatório não têm serviço neste repositório.
+Não há reserva de crédito, webhook, PIX nem checkout. O gateway responde 404 para esses caminhos. Captura, registros e relatório não têm serviço neste repositório.

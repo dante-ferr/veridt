@@ -10,6 +10,7 @@ const routes: Record<string, RouteClass> = {
   'GET /v1/keys/jwks': 'public',
   'GET /v1/health': 'public',
   'GET /v1/credit-packages': 'protected',
+  'GET /v1/credits/balance': 'protected',
   'GET /v1/credit-orders': 'protected',
   'POST /v1/credit-orders': 'protected',
   'GET /v1/me': 'protected',
@@ -26,7 +27,13 @@ export function classifyRoute(method: string, path: string): RouteClass {
 
 export function upstreamFor(path: string): 'identity' | 'payments' {
   const clean = path.split('?')[0] ?? path
-  if (clean.startsWith('/v1/credit-packages') || clean.startsWith('/v1/credit-orders')) return 'payments'
+  if (
+    clean.startsWith('/v1/credit-packages') ||
+    clean.startsWith('/v1/credit-orders') ||
+    clean.startsWith('/v1/credits')
+  ) {
+    return 'payments'
+  }
   return 'identity'
 }
 

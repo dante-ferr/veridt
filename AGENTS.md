@@ -58,11 +58,11 @@ Implemente somente quando o desenvolvedor pedir, e somente estes requisitos do P
 | REQ 02 | Recuperar senha. |
 | REQ 03 | Entrar no sistema. |
 | REQ 04 | Sair do sistema. |
-| REQ 05 | Comprar créditos: escolher pacote e informar faturamento. O pedido para em `billing_recorded`. O pagamento continua no REQ 06. |
+| REQ 05 | Comprar créditos: escolher pacote, informar faturamento e creditar o saldo. O pedido fica em `billing_recorded`. O meio de pagamento (PIX/Mercado Pago) continua no REQ 06. |
 
 REQ 06 em diante ficam de fora até um pedido explícito. A lista de títulos está no [roteiro](docs/src/roadmap.md).
 
-O REQ 05 descreve um fluxo que chega ao pagamento, e o PDF numera o pagamento como REQ 06. Não avance essa fronteira por conta própria. A sugestão registrada é implementar escolha de pacote e dados de faturamento, e parar antes de executar o pagamento.
+O REQ 05 descreve um fluxo que chega ao pagamento, e o PDF numera o meio de pagamento como REQ 06. Neste recorte, gravar o faturamento também credita o saldo. Não implemente PIX, Mercado Pago, webhook nem checkout até o desenvolvedor pedir o REQ 06.
 
 ## Arquitetura a seguir
 

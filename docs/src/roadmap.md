@@ -9,11 +9,11 @@ As telas existem em `web/` e estão integradas à API descrita em [Fluxos](fluxo
 - REQ 01: cadastrar advogado e usuário comum, com confirmação de e-mail (`/confirm`).
 - REQ 02: recuperar senha (pedir link e definir nova senha).
 - REQ 03 e REQ 04: entrar e sair, com a sessão restaurada pelo cookie ao recarregar a página.
-- REQ 05: comprar créditos (passo 1, pacote) e faturamento (passo 2), com o pedido gravado como `billing_recorded` e listado no histórico. O pagamento (passo 3) é o REQ 06 e fica fora.
+- REQ 05: comprar créditos (passo 1, pacote) e faturamento (passo 2), com o pedido gravado como `billing_recorded`, saldo creditado e listado no histórico. O meio de pagamento (passo 3) é o REQ 06 e fica fora.
 
 ## 2. Pendências
 
-- Saldo de créditos real, junto com o pagamento (REQ 06).
+- Meio de pagamento (PIX/Mercado Pago) no REQ 06.
 - Testes automatizados da interface.
 
 ## Fora deste roteiro

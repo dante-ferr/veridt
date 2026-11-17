@@ -18,6 +18,7 @@ describe('routes', () => {
 
   it('protects the signed-in routes and rejects unknown ones', () => {
     expect(classifyRoute('GET', '/v1/credit-packages')).toBe('protected')
+    expect(classifyRoute('GET', '/v1/credits/balance')).toBe('protected')
     expect(classifyRoute('POST', '/v1/credit-orders')).toBe('protected')
     expect(classifyRoute('GET', '/v1/credit-orders/4f0b1a0e-6d2c-4a1e-9b55-0c2a6d9e1f10')).toBe('protected')
     expect(classifyRoute('GET', '/v1/me')).toBe('protected')
@@ -28,6 +29,7 @@ describe('routes', () => {
 
   it('sends credit routes to payments and account routes to identity', () => {
     expect(upstreamFor('/v1/credit-packages')).toBe('payments')
+    expect(upstreamFor('/v1/credits/balance')).toBe('payments')
     expect(upstreamFor('/v1/credit-orders')).toBe('payments')
     expect(upstreamFor('/v1/sessions')).toBe('identity')
     expect(upstreamFor('/v1/me')).toBe('identity')

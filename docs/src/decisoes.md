@@ -46,7 +46,9 @@ Fechada em 2026-11-11, com o pedido de implementação e a sugestão já registr
 
 ## 9. Fronteira do REQ 05
 
-A compra grava o pacote escolhido e o faturamento. O estado do pedido fica `billing_recorded`. Não há cobrança, provedor, webhook nem saldo. Isso começa no REQ 06, que continua fora do escopo.
+A compra grava o pacote escolhido e o faturamento. O estado do pedido fica `billing_recorded` e os créditos do pacote entram no saldo (`balance_cache`). Não há cobrança, provedor, webhook, PIX nem checkout. Esses meios começam no REQ 06, que continua fora do escopo.
+
+Atualizado em 2026-11-16: o saldo passa a ser creditado neste recorte, porque o PDF trata “comprar créditos” no REQ 05 e isola no REQ 06 o meio de pagamento.
 
 ## 10. Confirmação de e-mail
 
@@ -91,7 +93,7 @@ Decidido em 2026-11-11. As telas logadas usam `AppLayout` (`web/src/components/l
 
 A tela `/credits` (REQ 05, passo 1) lista os pacotes de `web/src/services/credits.ts`, fixos no código como no enunciado, e mostra o histórico de compras com pedidos simulados. O pacote escolhido fica numa store `zustand` (`web/src/stores/credit-purchase-store.ts`), persistida no `sessionStorage`, para a tela de faturamento usar.
 
-A tela `/credits/billing` (passo 2) pede comprador e endereço com as mesmas regras do `POST /v1/credit-orders`. Quando o envio dá certo, a seleção é limpa e a tela volta para `/credits`. O passo 3, pagamento, aparece nos passos mas é o REQ 06.
+A tela `/credits/billing` (passo 2) pede comprador e endereço com as mesmas regras do `POST /v1/credit-orders`. Quando o envio dá certo, a seleção é limpa, o saldo do header atualiza e a tela volta para `/credits`. O passo 3, pagamento, aparece nos passos mas é o REQ 06.
 
 ## 17. Sessão com refresh token em cookie
 
@@ -105,7 +107,7 @@ O access token fica na store `zustand` de sessão, só em memória. Um intercept
 
 A guarda de rotas usa o `middleware` do React Router (`web/src/app/middleware/`): `requireSession` nas telas logadas e `redirectIfAuthenticated` em entrar, cadastrar e recuperar senha. Ao abrir o app, o middleware tenta o refresh uma vez para restaurar a sessão. É proteção de experiência; quem protege os dados é o gateway.
 
-Os erros da API são traduzidos pelo código (`web/src/lib/api-error.ts`) e vão para o campo do formulário quando há um campo correspondente. O saldo do header fica fixo em 0 no front até existir pagamento. No histórico de compras, a coluna Forma mostra "—" e o estado `billing_recorded` aparece como "FATURAMENTO · Registrado".
+Os erros da API são traduzidos pelo código (`web/src/lib/api-error.ts`) e vão para o campo do formulário quando há um campo correspondente. O header lê o saldo em `GET /v1/credits/balance` e invalida o cache depois de uma compra. No histórico de compras, a coluna Forma mostra "—" e o estado `billing_recorded` aparece como "FATURAMENTO · Registrado".
 
 ## 19. Ambiente da interface
 
@@ -115,7 +117,7 @@ Na tela de faturamento, o botão **Preencher automaticamente** aparece só em de
 
 ## O que ainda está aberto
 
-| Item em aberto                                                                                                            | Quando se resolve                        |
-| :------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------- |
-| Saldo de créditos. O header mostra 0 fixo; não há endpoint porque nenhum crédito é concedido antes do pagamento (REQ 06). | Quando o pagamento entrar no escopo      |
-| Cada fatiamento SOLID que mude módulos, portas ou hierarquia além do que está em [SOLID](solid.md).                       | No momento em que a alternativa aparecer |
+| Item em aberto                                                                                      | Quando se resolve                        |
+| :-------------------------------------------------------------------------------------------------- | :--------------------------------------- |
+| Meio de pagamento (PIX, Mercado Pago, webhook). O saldo já é creditado no faturamento deste recorte. | Quando o REQ 06 entrar no escopo         |
+| Cada fatiamento SOLID que mude módulos, portas ou hierarquia além do que está em [SOLID](solid.md). | No momento em que a alternativa aparecer |

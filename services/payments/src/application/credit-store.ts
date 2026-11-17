@@ -19,4 +19,5 @@ export abstract class CreditStore {
   abstract saveOrder(order: StoredOrder): Promise<void>
   abstract listOrders(accountId: string): Promise<StoredOrder[]>
   abstract findOrder(accountId: string, id: string): Promise<StoredOrder | null>
+  abstract getBalance(accountId: string): Promise<number>
 }

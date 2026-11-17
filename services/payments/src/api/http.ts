@@ -14,7 +14,13 @@ import {
 import { remoteJwks, verifyAccessToken, type Access } from '@veridt/auth'
 import { z, ZodError } from 'zod'
 import type { Result } from '../application/result'
-import { GetCreditOrder, ListCreditOrders, ListCreditPackages, RecordCreditOrder } from '../application/use-cases'
+import {
+  GetCreditBalance,
+  GetCreditOrder,
+  ListCreditOrders,
+  ListCreditPackages,
+  RecordCreditOrder,
+} from '../application/use-cases'
 import type { Billing } from '../domain/catalog'
 import { Config } from '../infrastructure/config'
 
@@ -81,6 +87,27 @@ export class PackagesController {
   async list(@Headers('authorization') authorization: string | undefined) {
     await accessFrom(authorization, this.keys(), this.config)
     return { items: await this.listPackages.execute() }
+  }
+
+  private keys(): ReturnType<typeof remoteJwks> {
+    this.jwks ??= remoteJwks(this.config.jwksUrl)
+    return this.jwks
+  }
+}
+
+@Controller('credits')
+export class BalanceController {
+  private jwks: ReturnType<typeof remoteJwks> | null = null
+
+  constructor(
+    private readonly getBalance: GetCreditBalance,
+    private readonly config: Config,
+  ) {}
+
+  @Get('balance')
+  async balance(@Headers('authorization') authorization: string | undefined) {
+    const access = await accessFrom(authorization, this.keys(), this.config)
+    return this.getBalance.execute(access.sub)
   }
 
   private keys(): ReturnType<typeof remoteJwks> {

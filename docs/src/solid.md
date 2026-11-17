@@ -26,7 +26,7 @@ Nome de função, arquivo de teste espelhando um caso de uso já aceito, e a dir
 
 | Princípio | Decisão | Onde |
 | :--- | :--- | :--- |
-| Responsabilidade única | Um caso de uso por ação: cadastrar, confirmar e-mail, entrar, renovar sessão, sair, pedir recuperação, redefinir senha, ler a conta, listar pacotes, gravar pedido, listar pedidos e ler um pedido. | `services/identity/src/application/use-cases.ts`, `services/payments/src/application/use-cases.ts` |
+| Responsabilidade única | Um caso de uso por ação: cadastrar, confirmar e-mail, entrar, renovar sessão, sair, pedir recuperação, redefinir senha, ler a conta, listar pacotes, gravar pedido, listar pedidos, ler um pedido e ler o saldo. | `services/identity/src/application/use-cases.ts`, `services/payments/src/application/use-cases.ts` |
 | Aberto/fechado | Advogado e usuário comum são o campo `profile` (`lawyer` ou `common_user`). Não há hierarquia de tipos. A empresa continua fora. | `services/identity/src/application/identity-store.ts` |
 | Substituição | Os dois perfis entram e saem pelo mesmo contrato de sessão. | `POST /v1/sessions` e `POST /v1/sessions/logout` |
 | Segregação de interface | Uma porta por serviço: `IdentityStore` e `CreditStore`. Conta, sessão e e-mail não viraram portas separadas. | `services/identity/src/application/identity-store.ts`, `services/payments/src/application/credit-store.ts` |
